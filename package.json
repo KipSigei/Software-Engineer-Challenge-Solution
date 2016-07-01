@@ -1,0 +1,14 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "description": "function to process water points data set",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kip",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.72.0"
+  }
+}
