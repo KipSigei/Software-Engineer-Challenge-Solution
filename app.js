@@ -43,6 +43,7 @@ function calculate(url, callback) {
             var communitiesData = listOfCommunities.map(function(community) {
                 var waterPoints = 0;
                 var brokenWaterPoints = 0;
+                var totalWaterPoints=0;
                 //obj to store obtained info for each community
                 var obtainedCommunityData = {};
                 //go through the whole dataset to calculate number of functional water points
@@ -54,24 +55,26 @@ function calculate(url, callback) {
                         if (elem.water_functioning != "yes") {
                             brokenWaterPoints++;
                         }
+                        totalWaterPoints++;
                     }
                 });
                 obtainedCommunityData['community'] = community;
                 obtainedCommunityData['waterPoints'] = waterPoints;
-                obtainedCommunityData['brokenWaterPoints'] = brokenWaterPoints;
+
+                obtainedCommunityData['percentageOfBrokenWaterPoints'] = (brokenWaterPoints/totalWaterPoints)*100;
                 return obtainedCommunityData;
                 /*dataset.filter(function(obj) {
                 return obj.communities_villages===community;
         });*/
             });
-            //sort the data based on number of broken water points
-            communitiesData.sort(dynamicSort('brokenWaterPoints'));
+            //sort the data based on percentage of broken water points
+            communitiesData.sort(dynamicSort('percentageOfBrokenWaterPoints'));
             //array to contain list of distinct number of broken water points to help in ranking
             var ranks = [];
-            //populate the array with the distinct list of broken water points values
+            //populate the array with the distinct list of percentage of broken water points values
             communitiesData.map(function(obj) {
-                if (!contains(ranks, obj.brokenWaterPoints)) {
-                    ranks.push(obj.brokenWaterPoints);
+                if (!contains(ranks, obj.percentageOfBrokenWaterPoints)) {
+                    ranks.push(obj.percentageOfBrokenWaterPoints);
                 }
             });
             //reverse the array to use index to rank
@@ -79,7 +82,7 @@ function calculate(url, callback) {
             //rank the communities using the ranks list
             var rankedcommunitiesData = communitiesData.map(function(elem) {
                 //add a rank property to each community object
-                elem.rank = ranks.indexOf(elem.brokenWaterPoints) + 1;
+                elem.rank = ranks.indexOf(elem.percentageOfBrokenWaterPoints) + 1;
                 return elem;
             });
             //create the result object
